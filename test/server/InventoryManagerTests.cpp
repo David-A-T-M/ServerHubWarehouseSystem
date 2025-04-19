@@ -6,6 +6,26 @@ protected:
     InventoryManager inventory;
 };
 
+TEST_F(InventoryManagerTest, AddClientWithInventory) {
+    cJSON* initialInventory = cJSON_CreateObject();
+    cJSON_AddNumberToObject(initialInventory, "3", 10);
+    inventory.addClient(1, initialInventory);
+    EXPECT_EQ(inventory.getStockLevel(3), 10);
+}
+
+TEST_F(InventoryManagerTest, AddClientWithoutInventory) {
+    inventory.addClient(2, nullptr);
+    EXPECT_NE(inventory.getClientInventory(2), nullptr);
+}
+
+TEST_F(InventoryManagerTest, RemoveClient) {
+    cJSON* initialInventory = cJSON_CreateObject();
+    cJSON_AddNumberToObject(initialInventory, "3", 10);
+    inventory.addClient(2, initialInventory);
+    inventory.removeClient(2);
+    EXPECT_EQ(inventory.getStockLevel(3), 0);
+}
+
 TEST_F(InventoryManagerTest, IncreaseStock_Valid) {
     EXPECT_TRUE(inventory.increaseStock(100, 10));
     EXPECT_EQ(inventory.getStockLevel(100), 10);

@@ -16,6 +16,49 @@ InventoryManager::~InventoryManager() {
     }
 }
 
+void InventoryManager::addClient(int clientID, cJSON* initialInventory) {
+    if (clientInventories.find(clientID) == clientInventories.end()) {
+        clientInventories[clientID] = initialInventory ? cJSON_Duplicate(initialInventory, true) : cJSON_CreateObject();
+        if (initialInventory) {
+            cJSON* item = nullptr;
+            cJSON_ArrayForEach(item, initialInventory) {
+                if (cJSON_IsNumber(item)) {
+                    int itemID = std::stoi(item->string);
+                    int quantity = static_cast<int>(item->valuedouble);
+                    increaseStock(itemID, quantity);
+                }
+            }
+        }
+    }
+}
+
+void InventoryManager::removeClient(int clientID) {
+    auto it = clientInventories.find(clientID);
+    if (it != clientInventories.end()) {
+        cJSON* clientInventory = it->second;
+
+        cJSON* item = nullptr;
+        cJSON_ArrayForEach(item, clientInventory) {
+            if (cJSON_IsNumber(item)) {
+                int itemID = std::stoi(item->string);
+                int quantity = static_cast<int>(item->valuedouble);
+                decreaseStock(itemID, quantity);
+            }
+        }
+
+        cJSON_Delete(clientInventory);
+        clientInventories.erase(it);
+    }
+}
+
+cJSON* InventoryManager::getClientInventory(int clientID) {
+    auto it = clientInventories.find(clientID);
+    if (it != clientInventories.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
 bool InventoryManager::increaseStock(int itemID, int quantity) {
     if (quantity <= 0 || !globalInventory) return false;
 
