@@ -57,7 +57,7 @@ TEST_F(NetworkManagerTest, SendMessageTest) {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    manager.sendMessage(1, *testMessage1);
+    manager.sendMessage(*testMessage1);
 
     char buffer[1024];
     ssize_t bytes = recv(sockfd, buffer, sizeof(buffer), 0);
@@ -141,7 +141,7 @@ TEST_F(NetworkManagerTest, CloseConnectionTest) {
 
     Message serverMessage(1, MessageType::NOTIFICATION, NotificationSubType::NO_STOCK,
                           cJSON_CreateString("Server test message"));
-    manager.sendMessage(1, serverMessage);
+    manager.sendMessage(serverMessage);
 
     char buffer[1024];
     ssize_t bytes = recv(sockfd, buffer, sizeof(buffer), 0);

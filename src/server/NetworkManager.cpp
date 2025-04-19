@@ -78,7 +78,8 @@ std::vector<Message> NetworkManager::receiveUDPMessage() {
 }
 
 
-void NetworkManager::sendMessage(int clientID, const Message& msg) {
+void NetworkManager::sendMessage(const Message& msg) {
+    int clientID = msg.getClientID();
     auto it = activeClients.find(clientID);
     if (it == activeClients.end()) return;
 

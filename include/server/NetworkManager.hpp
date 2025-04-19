@@ -36,21 +36,24 @@ class NetworkManager {
         void listenForConnections();
 
         /**
-        * @brief Receives incoming UDP messages.
-        *
-        * Processes messages received on both IPv4 and IPv6 UDP sockets and sends acknowledgment responses.
-        *
-        * @return A vector of `Message` objects containing the received messages.
-        */
+         * @brief Receives incoming UDP messages.
+         *
+         * Processes messages received on both IPv4 and IPv6 UDP sockets and sends acknowledgment responses.
+         *
+         * @return A vector of `Message` objects containing the received messages.
+         */
         std::vector<Message> receiveUDPMessage();
 
         /**
          * @brief Sends a message to a specific client.
          *
-         * @param clientID The unique identifier of the client to send the message to.
-         * @param msg The message to be sent, represented as a `Message` object.
+         * This function sends a message to the client identified by the `clientID` field in the `Message` object.
+         * It determines the appropriate protocol (TCP or UDP) and sends the message accordingly.
+         * If the client is not found in the active clients list, the function does nothing.
+         *
+         * @param msg The message to be sent, represented as a `Message` object. The `clientID` field must be set.
          */
-        void sendMessage(int clientID, const Message& msg);
+        void sendMessage(const Message& msg);
 
         /**
          * @brief Receives a message from a specific client.
