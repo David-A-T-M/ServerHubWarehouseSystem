@@ -21,8 +21,6 @@ enum class NotificationSubType {
 
 enum class InventorySubType {
     REQUEST,
-    CANCEL,
-    UPDATE,
     INFO,
     HISTORY
 };
