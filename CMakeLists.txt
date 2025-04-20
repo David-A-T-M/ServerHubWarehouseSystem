@@ -13,4 +13,5 @@ add_subdirectory(test)
 
 # GoogleTest
 add_subdirectory(external/googletest)
+add_subdirectory(external/unity)
 enable_testing()

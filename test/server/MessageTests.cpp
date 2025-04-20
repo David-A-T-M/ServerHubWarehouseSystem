@@ -35,7 +35,7 @@ TEST_F(MessageTest, ConstructorWithAllFields) {
 }
 
 TEST_F(MessageTest, CopyConstructorCreatesDeepCopy) {
-    const Message original(1, MessageType::INVENTORY, InventorySubType::UPDATE, testContent);
+    const Message original(1, MessageType::INVENTORY, InventorySubType::REQUEST, testContent);
     Message copy = original;
 
     EXPECT_EQ(copy.getClientID(), original.getClientID());
