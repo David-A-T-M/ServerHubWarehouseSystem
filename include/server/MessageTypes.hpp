@@ -16,7 +16,8 @@ enum class AlertSubType {
 enum class NotificationSubType {
     ON_ROUTE,
     RECEIVED,
-    NO_STOCK
+    NO_STOCK,
+    DISCARDED
 };
 
 enum class InventorySubType {

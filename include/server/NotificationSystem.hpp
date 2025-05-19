@@ -86,17 +86,16 @@ class NotificationSystem {
         void unsubscribe(int clientID, NotificationSubType type);
 
         /**
-         * @brief Sends a notification to a specific client if subscribed.
+         * @brief Sends a notification to a specific client if they are subscribed.
          *
-         * Sends a notification message to the client if they are subscribed to the specified
-         * notification type.
+         * This method checks if the client associated with the given message is subscribed
+         * to the notification subtype. If the client is subscribed, the message is sent
+         * using the `NetworkManager`.
          *
-         * @param clientID Unique identifier of the client.
-         * @param type The type of notification to send.
-         * @param message The notification message to be sent.
-         * @return `true` if the notification was sent successfully, `false` otherwise.
+         * @param msg Pointer to the `Message` object containing the notification details.
+         * @return `true` if the notification was successfully sent, `false` otherwise.
          */
-        bool notify(int clientID, NotificationSubType type, const std::string& message);
+        bool notify(const Message* msg);
     private:
         std::map<int, std::set<NotificationSubType>> subscriptions; ///< Maps client IDs to their subscribed notification types.
         NetworkManager* networkManager; ///< Pointer to the `NetworkManager` for sending messages.

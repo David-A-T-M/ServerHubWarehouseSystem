@@ -23,6 +23,7 @@ class Message {
          * @param type The main type of the message (e.g., ALERT, NOTIFICATION).
          * @param subType The specific subtype of the message, derived from the main type.
          * @param msgContent A pointer to the cJSON object representing the message content.
+         *                   The ownership of the cJSON object is transferred to the Message.
          */
         template<typename EnumClass>
         Message(MessageType type, EnumClass subType, cJSON* msgContent)
@@ -38,6 +39,7 @@ class Message {
          * @param type The main type of the message (e.g., ALERT, NOTIFICATION).
          * @param subType The specific subtype of the message, derived from the main type.
          * @param msgContent A pointer to the cJSON object representing the message content.
+         *                   The ownership of the cJSON object is transferred to the Message.
          */
         template <typename EnumClass>
         Message(int id, MessageType type, EnumClass subType, cJSON* msgContent)
@@ -47,6 +49,7 @@ class Message {
          * @brief Copy constructor for the Message class.
          *
          * Creates a deep copy of the given Message object, including its content.
+         * If the content cannot be duplicated, an exception is thrown.
          *
          * @param other The Message object to copy.
          */
@@ -56,6 +59,7 @@ class Message {
          * @brief Assignment operator for the Message class.
          *
          * Performs a deep copy of the given Message object, replacing the current object's data.
+         * If the content cannot be duplicated, an exception is thrown.
          *
          * @param other The Message object to assign to this instance.
          * @return A reference to the updated Message object.
@@ -95,14 +99,23 @@ class Message {
         [[nodiscard]] int getSubType() const;
 
         /**
-         * @brief Retrieves the content of the message.
+         * @brief Retrieves the content of the message in read-only mode.
          *
          * The content is stored as a cJSON object, which can be used to access
-         * the message's payload.
+         * the message's payload. The caller must not modify the returned object.
          *
          * @return A pointer to the cJSON object representing the message content.
          */
-        [[nodiscard]] cJSON* getContent() const;
+        [[nodiscard]] cJSON* getContentRO() const;
+
+        /**
+         * @brief Retrieves the content of the message in read-write mode.
+         *
+         * The content is stored as a cJSON object, which can be modified by the caller.
+         *
+         * @return A pointer to the cJSON object representing the message content.
+         */
+        [[nodiscard]] cJSON* getContentRW();
 
         /**
          * @brief Sets the unique identifier of the client associated with the message.
@@ -112,6 +125,26 @@ class Message {
          * @param clientID The unique identifier of the client.
          */
         void setClientID(int clientID);
+
+        /**
+         * @brief Sets the main type of the message.
+         *
+         * @param type The MessageType enumeration value representing the message type.
+         */
+        void setType(MessageType type);
+
+        /**
+         * @brief Sets the subtype of the message.
+         *
+         * The subtype provides a more specific classification within the main type.
+         *
+         * @tparam EnumClass The enumeration type for the message subtype.
+         * @param st The specific subtype of the message.
+         */
+        template <typename EnumClass>
+        void setSubType(EnumClass st) {
+            subType = static_cast<int>(st);
+        }
 
         /**
          * @brief Serializes the message into a JSON string.

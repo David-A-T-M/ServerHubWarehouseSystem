@@ -24,9 +24,11 @@ Message::~Message() {
 int Message::getClientID() const { return clientID; }
 MessageType Message::getType() const { return type; }
 int Message::getSubType() const { return subType; }
-cJSON* Message::getContent() const { return content; }
+cJSON* Message::getContentRO() const { return content; }
+cJSON* Message::getContentRW() { return content; }
 
 void Message::setClientID(int id) { clientID = id; }
+void Message::setType(MessageType t) { type = t; }
 
 std::string Message::toJSONString() const {
     cJSON* root = cJSON_CreateObject();

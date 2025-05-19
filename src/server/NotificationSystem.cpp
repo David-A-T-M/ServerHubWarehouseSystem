@@ -43,12 +43,13 @@ void NotificationSystem::unsubscribe(int clientID, NotificationSubType type) {
     }
 }
 
-bool NotificationSystem::notify(int clientID, NotificationSubType type, const std::string& message) {
-    if (auto it = subscriptions.find(clientID); it != subscriptions.end() && it->second.contains(type)) {
-        cJSON* content = cJSON_CreateObject();
-        cJSON_AddStringToObject(content, "message", message.c_str());
-        const Message msg(clientID, MessageType::NOTIFICATION, type, content);
-        networkManager->sendMessage(msg);
+bool NotificationSystem::notify(const Message* msg) {
+    const int clientID = msg->getClientID();
+    const auto type = static_cast<NotificationSubType>(msg->getSubType());
+
+    if (const auto it = subscriptions.find(clientID);
+        it != subscriptions.end() && it->second.contains(type)) {
+        networkManager->sendMessage(*msg);
         return true;
     }
     return false;

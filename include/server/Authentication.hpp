@@ -3,6 +3,10 @@
 #include <string>
 #include <map>
 
+namespace AuthenticationConstants {
+    constexpr int MAX_FAILED_ATTEMPTS = 3; /**< Maximum number of failed login attempts before blocking. */
+}
+
 /**
  * @class Authentication
  * @brief Handles client authentication and authorization.
@@ -11,6 +15,10 @@
  * authenticating clients, and controlling their authorization status. It includes
  * features such as blocking clients after multiple failed login attempts, unblocking
  * them using a fingerprint-based method, and handling emergency blocking scenarios.
+ *
+ * Additionally, this class logs key events such as successful logins, failed login
+ * attempts, client blocking, and credential modifications. These logs are essential
+ * for auditing and debugging purposes.
  */
 class Authentication {
     public:
@@ -21,6 +29,11 @@ class Authentication {
          * If the password is incorrect, the number of failed attempts is incremented.
          * After 3 consecutive failed attempts, the client is blocked. Additionally,
          * authentication will fail if the client is already blocked or emergency blocked.
+         *
+         * Logs:
+         * - Successful login.
+         * - Failed login attempt.
+         * - Client blocked after exceeding maximum failed attempts.
          *
          * @param client_id The unique identifier of the client.
          * @param password The plaintext password provided by the client.
@@ -45,6 +58,9 @@ class Authentication {
          * arbitrary changes to the logged-in status, improving security by preventing
          * unauthorized logins.
          *
+         * Logs:
+         * - Client logout event.
+         *
          * @param client_id The unique identifier of the client.
          */
         void setLoggedOut(int client_id);
@@ -54,6 +70,9 @@ class Authentication {
          *
          * Registers a new client by storing their hashed password and initializing
          * their authentication data.
+         *
+         * Logs:
+         * - New client added with their credentials.
          *
          * @param client_id The unique ID of the client.
          * @param newPassword The plaintext password to be hashed and stored.
@@ -66,6 +85,9 @@ class Authentication {
          * This method deletes the authentication data of a client, effectively removing
          * them from the system. If the client ID does not exist, the method does nothing.
          *
+         * Logs:
+         * - Client credentials removed.
+         *
          * @param client_id The unique identifier of the client.
          */
         void removeCredentials(int client_id);
@@ -74,6 +96,9 @@ class Authentication {
          * @brief Unblocks a client using a fingerprint-based method.
          *
          * Resets the block status and failed login attempts for a client.
+         *
+         * Logs:
+         * - Client unblocked using fingerprint.
          *
          * @param client_id The unique ID of the client.
          * @return `true` if the client was successfully unblocked, `false` otherwise.
@@ -86,6 +111,9 @@ class Authentication {
          * Marks the client as blocked due to an emergency, preventing them from performing
          * any actions until manually unlocked.
          *
+         * Logs:
+         * - Client blocked due to an emergency alert.
+         *
          * @param client_id The unique identifier of the client.
          */
         void blockDueToEmergency(int client_id);
@@ -95,6 +123,9 @@ class Authentication {
          *
          * If the client is blocked due to an emergency, this method allows unlocking them
          * by providing the correct secret phrase.
+         *
+         * Logs:
+         * - Client unlocked using the secret phrase.
          *
          * @param client_id The unique identifier of the client.
          * @param secretPhrase The secret phrase used to unlock the client.
@@ -130,6 +161,4 @@ class Authentication {
          * @return The hashed password as a string.
          */
         [[nodiscard]] std::string hashPassword(const std::string& password) const;
-
 };
-
